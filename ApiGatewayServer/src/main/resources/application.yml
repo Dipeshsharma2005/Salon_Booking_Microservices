@@ -1,0 +1,70 @@
+spring:
+  application:
+    name: ApiGatewayServer
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+          routes:
+           - id : BOOKINGSERVICE
+             uri: "lb://BOOKINGSERVICE"  # lb means load balanced and that BOOKINGSERVICE is taken from eureka service registry
+             predicates:
+               - Path= /api/bookings/**
+
+           - id: PAYMENTSERVICE
+             uri: "lb://PAYMENTSERVICE"  # lb means load balanced and that BOOKINGSERVICE is taken from eureka service registry
+             predicates:
+               - Path= /api/payments/**
+
+           - id: CATEGORYSERVICE
+             uri: "lb://CATEGORYSERVICE"  # lb means load balanced and that BOOKINGSERVICE is taken from eureka service registry
+             predicates:
+               - Path= /api/categories/**
+
+           - id: SALONSERVICE
+             uri: "lb://SALONSERVICE"  # lb means load balanced and that BOOKINGSERVICE is taken from eureka service registry
+             predicates:
+               - Path= /salons/**, /api/salons/**, /api/admin/salons/**
+
+           - id: SERVICEOFFERING
+             uri: "lb://SERVICEOFFERING"  # lb means load balanced and that BOOKINGSERVICE is taken from eureka service registry
+             predicates:
+               - Path= /api/service-offering/**
+
+           - id: USERSERVICE
+             uri: "lb://USERSERVICE"  # lb means load balanced and that BOOKINGSERVICE is taken from eureka service registry
+             predicates:
+               - Path=/auth/**,/api/admin/users/**,/api/users/**,/users/**
+
+           - id: NOTIFICATIONSERVICE
+             uri: "lb://NOTIFICATIONSERVICE"  # lb means load balanced and that BOOKINGSERVICE is taken from eureka service registry
+             predicates:
+               - Path=/api/notifications/**
+
+           - id: REVIEWSERVICE
+             uri: "lb://REVIEWSERVICE"  # lb means load balanced and that BOOKINGSERVICE is taken from eureka service registry
+             predicates:
+               - Path=/api/reviews/**
+          default-filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+  security:
+    oauth2:
+      resource server:
+        jwt:
+          jwk-set-uri: "http://localhost:8080/realms/master/protocol/openid-connect/certs"
+server:
+  port: 5000
+
+eureka:
+  instance:
+    prefer-ip-address: true
+
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: "http://localhost:8070/eureka/"

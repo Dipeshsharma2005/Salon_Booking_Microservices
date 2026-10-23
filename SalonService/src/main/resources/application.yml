@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: SalonService
+
+  datasource:
+    url: ${SALON_DB_URL}
+    username: ${SALON_DB_USERNAME}
+    password: ${SALON_DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+server:
+  port: 5002
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: "http://localhost:8070/eureka/"
